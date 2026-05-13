@@ -1,34 +1,45 @@
 from games.cartas import Baraja
 
-def calcular_puntaje(mano):
-    puntaje = 0
-    cantidad_ases = 0
+class Mano:
+    def __init__(self):
+        self.cartas = []
+        self.puntos = 0
+        self.ases = 0
 
-    for carta in mano:
-        # Determinamos el valor matemático según el string de la carta
-        if carta.valor in ['J', 'Q', 'K']:
-            puntaje += 10
-        elif carta.valor == 'A':
-            puntaje += 11
-            cantidad_ases += 1
-        else:
-            puntaje += int(carta.valor) # Transformamos el texto '2', '3', etc. a entero
-
-    # Bucle de corrección matemática para los Ases
-    while puntaje > 21 and cantidad_ases > 0:
-        puntaje -= 10
-        cantidad_ases -= 1
-
-    return puntaje
-
-if __name__ == "__main__":
-    mi_baraja = Baraja()
-    mi_baraja.revolver()
-
-    mano_jugador = [mi_baraja.dar_carta(), mi_baraja.dar_carta()]
-    
-    print("Tus cartas son:")
-    for c in mano_jugador:
-        print(f"- {c}")
+    def agregar_carta(self, carta):
+        self.cartas.append(carta)
         
-    print(f"Puntaje total: {calcular_puntaje(mano_jugador)}")
+        # Lógica de asignación de puntos
+        if carta.valor in ['J', 'Q', 'K']:
+            self.puntos += 10
+        elif carta.valor == 'A':
+            self.puntos += 11
+            self.ases += 1
+        else:
+            self.puntos += int(carta.valor)
+
+        # Ajuste automático del As (Salvavidas)
+        while self.puntos > 21 and self.ases > 0:
+            self.puntos -= 10
+            self.ases -= 1
+
+    # --- ESTO ES UN METODO DE CONTROL LISTO PARA USARSE---
+
+    def esta_pasado(self):
+        """Retorna True si la mano supera los 21 puntos."""
+        return self.puntos > 21
+
+    def tiene_blackjack(self):
+        """Retorna True si tiene exactamente 21 puntos."""
+        return self.puntos == 21
+
+    def mostrar_mano(self, oculta=False):
+        """
+        Retorna una cadena con las cartas. 
+        Si 'oculta' es True, solo muestra la primera carta (útil para el crupier).
+        """
+        if oculta and len(self.cartas) > 0:
+            return f"[{self.cartas[0]}, <Carta Oculta>]"
+        
+        nombres = [str(c) for c in self.cartas]
+        return f"{' , '.join(nombres)} | Total: {self.puntos}"
