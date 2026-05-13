@@ -1,18 +1,17 @@
 import json
 import os 
 
-default_data = {
-    "cash": 50,
-    "has_selected_first_game": False,
+game_data = {
+    "cash": 1000,
     "unlocked_games": {
         "aviator": False,
         "blackjack": False,
         "poker": False
     },
-    "leaderboard": []
+    "has_made_first_choice": False  
 }
 
-game_data = default_data.copy()
+game_data = game_data.copy()
 
 def save():
     with open("save_data.json", "w") as f:
@@ -25,5 +24,5 @@ def load():
         with open("save_data.json", "r") as f:
             game_data = json.load(f)
     else:
-        game_data = default_data.copy()
+        game_data = game_data.copy()
         save()
