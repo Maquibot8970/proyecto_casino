@@ -23,3 +23,20 @@ class MenuScreen:
             label = self.font.render(game.capitalize (),True, (255,255,255))
             screen.blit(label,(rect.x + 20, rect.y +60))
 
+def handle_click(self,pos,game_data):
+    for game, rect in self.buttons.items():
+        if rect.collidepoint(pos) : #choice
+            if not game_data["has_made_first_choice"]:
+                game_data["unlocked_games"]["game"] = True
+                game_data["has_made_first_choice"] = True
+                return f"entering {game}"
+            
+            if game_data["unlocked_games"][game]:
+                    return f"entering {game}"
+            elif game_data["cash"] >= 500:
+                    game_data["cash"] -= 500
+                    game_data["unlocked_games"][game] = True
+                    return f"{game.capitalize()} purchased"
+            else:
+                    return "Not enough cash Need $500 to unlock."
+        return None
