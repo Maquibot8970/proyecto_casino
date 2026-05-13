@@ -3,7 +3,7 @@ import pygame
 class MenuScreen:
     def __init__(self,font):
         self.font = font
-    self.buttons = {          #(x,y,width,height)
+        self.buttons = {          #(x,y,width,height)
         "aviator":pygame.rect(100,300,200,150),
         "blackjack":pygame.rect(100,300,200,150),
         "poker":pygame.rect(100,300,200,150),
@@ -25,18 +25,20 @@ class MenuScreen:
 
 def handle_click(self,pos,game_data):
     for game, rect in self.buttons.items():
-        if rect.collidepoint(pos) : #choice
+        if rect.collidepoint(pos) : #choice free game
             if not game_data["has_made_first_choice"]:
                 game_data["unlocked_games"]["game"] = True
                 game_data["has_made_first_choice"] = True
                 return f"entering {game}"
             
-            if game_data["unlocked_games"][game]:
-                    return f"entering {game}"
-            elif game_data["cash"] >= 500:
+            #purchase
+            elif game_data["unlocked_games"][game]:
+                if game_data["cash"] >= 500:
                     game_data["cash"] -= 500
                     game_data["unlocked_games"][game] = True
                     return f"{game.capitalize()} purchased"
-            else:
+                else:
                     return "Not enough cash Need $500 to unlock."
+            else:
+                    return f"launching{game.upper()}"
         return None
