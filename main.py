@@ -30,7 +30,8 @@ while running:
                 save_manager.save()
         
         elif current_state == "AVIATOR":
-            state_signal = aviator.handle_event(event)
+            aviator.update()
+            state_signal = aviator.handle_event(event, save_manager.game_data)
             if state_signal == "MENU":
                 current_state = "Menu"
 
@@ -44,6 +45,7 @@ while running:
     if current_state == "Menu":  
         menu.draw(screen, save_manager.game_data)
     elif current_state == "AVIATOR":
+        aviator.update()
         aviator.draw(screen)
 
     pygame.display.flip()
