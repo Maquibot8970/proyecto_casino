@@ -25,3 +25,8 @@ while running:
             if result:
                 print(result)
                 save_manager.save() 
+
+    menu.draw(screen, save_manager.game_data)
+    pygame.display.flip()
+
+pygame.quit()
