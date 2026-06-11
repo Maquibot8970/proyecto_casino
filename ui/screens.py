@@ -52,19 +52,40 @@ class MenuScreen:
 class StartMenuScreen:
     def __init__(self, font):
         self.font = font
-        # Large font for the title
+      
         self.title_font = pygame.font.SysFont("Arial", 65, bold=True)
+        self.button_font = pygame.font.SysFont("Arial", 28, bold=True)
+        self.play_button = pygame.Rect(380, 280, 240, 60)
 
     def draw(self, screen):
-        # Premium dark casino burgundy background
+       
         screen.fill((28, 5, 8))
         
-        # Subtle glowing top line for visual style
+     
         pygame.draw.line(screen, (163, 22, 43), (0, 120), (1000, 120), 4)
         
-        # Centered Gold Title
+    
         title_surf = self.title_font.render("CASINO ROYAL", True, (247, 202, 24))
         screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 45))
 
+        # Render "Iniciar" button with interactive hover colors
+        mouse_pos = pygame.mouse.get_pos()
+        is_hovered = self.play_button.collidepoint(mouse_pos)
+        
+        bg_color = (163, 22, 43) if is_hovered else (84, 11, 22)
+        border_color = (247, 202, 24) if is_hovered else (130, 90, 40)
+        text_color = (255, 255, 255) if is_hovered else (220, 220, 220)
+        
+        pygame.draw.rect(screen, bg_color, self.play_button, border_radius=10)
+        pygame.draw.rect(screen, border_color, self.play_button, width=2, border_radius=10)
+        
+        text_surf = self.button_font.render("Iniciar", True, text_color)
+        screen.blit(text_surf, (
+            self.play_button.x + (self.play_button.width - text_surf.get_width()) // 2,
+            self.play_button.y + (self.play_button.height - text_surf.get_height()) // 2
+        ))
+
     def handle_click(self, pos):
+        if self.play_button.collidepoint(pos):
+            return "START"
         return None
