@@ -47,3 +47,24 @@ class MenuScreen:
                 else:
                     return "Not enough cash. Need $500 to unlock."
             return None
+
+
+class StartMenuScreen:
+    def __init__(self, font):
+        self.font = font
+        # Large font for the title
+        self.title_font = pygame.font.SysFont("Arial", 65, bold=True)
+
+    def draw(self, screen):
+        # Premium dark casino burgundy background
+        screen.fill((28, 5, 8))
+        
+        # Subtle glowing top line for visual style
+        pygame.draw.line(screen, (163, 22, 43), (0, 120), (1000, 120), 4)
+        
+        # Centered Gold Title
+        title_surf = self.title_font.render("CASINO ROYAL", True, (247, 202, 24))
+        screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 45))
+
+    def handle_click(self, pos):
+        return None
