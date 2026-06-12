@@ -56,6 +56,7 @@ class StartMenuScreen:
         self.title_font = pygame.font.SysFont("Arial", 65, bold=True)
         self.button_font = pygame.font.SysFont("Arial", 28, bold=True)
         self.play_button = pygame.Rect(380, 280, 240, 60)
+        self.settings_button = pygame.Rect(380, 360, 240, 60)  # Ajusta las coordenadas según tus necesidades
 
     def draw(self, screen):
        
@@ -65,27 +66,53 @@ class StartMenuScreen:
         pygame.draw.line(screen, (163, 22, 43), (0, 120), (1000, 120), 4)
         
     
-        title_surf = self.title_font.render("CASINO ROYAL", True, (247, 202, 24))
+        title_surf = self.title_font.render("CASINO", True, (247, 202, 24))
         screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 45))
 
-        # Render "Iniciar" button with interactive hover colors
+        
         mouse_pos = pygame.mouse.get_pos()
-        is_hovered = self.play_button.collidepoint(mouse_pos)
+        is_hovered_play = self.play_button.collidepoint(mouse_pos)
+        is_hovered_settings = self.settings_button.collidepoint(mouse_pos)
         
-        bg_color = (163, 22, 43) if is_hovered else (84, 11, 22)
-        border_color = (247, 202, 24) if is_hovered else (130, 90, 40)
-        text_color = (255, 255, 255) if is_hovered else (220, 220, 220)
+        bg_color_play = (163, 22, 43) if is_hovered_play else (84, 11, 22)
+        border_color_play = (247, 202, 24) if is_hovered_play else (130, 90, 40)
+        text_color_play = (255, 255, 255) if is_hovered_play else (220, 220, 220)
         
-        pygame.draw.rect(screen, bg_color, self.play_button, border_radius=10)
-        pygame.draw.rect(screen, border_color, self.play_button, width=2, border_radius=10)
+        bg_color_settings = (163, 22, 43) if is_hovered_settings else (84, 11, 22)
+        border_color_settings = (247, 202, 24) if is_hovered_settings else (130, 90, 40)
+        text_color_settings = (255, 255, 255) if is_hovered_settings else (220, 220, 220)
         
-        text_surf = self.button_font.render("Iniciar", True, text_color)
-        screen.blit(text_surf, (
-            self.play_button.x + (self.play_button.width - text_surf.get_width()) // 2,
-            self.play_button.y + (self.play_button.height - text_surf.get_height()) // 2
+        pygame.draw.rect(screen, bg_color_play, self.play_button, border_radius=10)
+        pygame.draw.rect(screen, border_color_play, self.play_button, width=2, border_radius=10)
+        text_surf_play = self.button_font.render("Iniciar", True, text_color_play)
+        screen.blit(text_surf_play, (
+            self.play_button.x + (self.play_button.width - text_surf_play.get_width()) // 2,
+            self.play_button.y + (self.play_button.height - text_surf_play.get_height()) // 2
+        ))
+        
+        pygame.draw.rect(screen, bg_color_settings, self.settings_button, border_radius=10)
+        pygame.draw.rect(screen, border_color_settings, self.settings_button, width=2, border_radius=10)
+        text_surf_settings = self.button_font.render("Configuración", True, text_color_settings)
+        screen.blit(text_surf_settings, (
+            self.settings_button.x + (self.settings_button.width - text_surf_settings.get_width()) // 2,
+            self.settings_button.y + (self.settings_button.height - text_surf_settings.get_height()) // 2
         ))
 
     def handle_click(self, pos):
         if self.play_button.collidepoint(pos):
             return "START"
+        elif self.settings_button.collidepoint(pos):
+            return "SETTINGS"
+        return None
+
+class SettingsMenuScreen:
+    def __init__(self, font):
+        self.font = font
+
+    def draw(self, screen):
+        screen.fill((28, 5, 8))
+        title_surf = self.font.render("Configuración", True, (247, 202, 24))
+        screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 45))
+
+    def handle_click(self, pos):
         return None

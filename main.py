@@ -1,53 +1,40 @@
 import pygame
 from data import save_manager
-from ui.screens import MenuScreen
+from ui.screens import MenuScreen, StartMenuScreen
 from games.aviator import AviatorGame
 
 pygame.init()
 save_manager.load() #cargamos datos
 
 screen = pygame.display.set_mode((1000,800))
-pygame.display.set_caption ("casino")
+clock = pygame.time.Clock()
 font = pygame.font.SysFont("Arial",30) #fuente y tamaño
 
 menu = MenuScreen(font)
 aviator = AviatorGame(font)
-current_state = "Menu"
+current_state = "START_MENU"
 running = True
+start_menu = StartMenuScreen(font)
+
 
 while running:
     for event in pygame.event.get():
-
-        if event.type == pygame.QUIT: #comprobamos si se da a la x en ventana y guardamos
-            save_manager.save()
+        if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            click_pos = event.pos
+            result = start_menu.handle_click(click_pos)
+            if result == "START":
+                current_state = "MENU"
+            elif result == "SETTINGS":
+                current_state = "SETTINGS_MENU"
 
-        if current_state == "Menu":
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                result = menu.handle_click(event.pos, save_manager.game_data)
-                if result == "STARTING_AVIATOR": 
-                    current_state = "AVIATOR"
-                save_manager.save()
-        
-        elif current_state == "AVIATOR":
-            aviator.update()
-            state_signal = aviator.handle_event(event, save_manager.game_data)
-            if state_signal == "MENU":
-                current_state = "Menu"
+    screen.fill((28, 5, 8))
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            result = menu.handle_click(event.pos, save_manager.game_data)
-
-            if result:
-                print(result)
-                save_manager.save() 
-
-    if current_state == "Menu":  
-        menu.draw(screen, save_manager.game_data)
-    elif current_state == "AVIATOR":
-        aviator.update()
-        aviator.draw(screen)
+    if current_state == "START_MENU":
+        start_menu.draw(screen)
 
     pygame.display.flip()
+    clock.tick(60)  #60 fps
 
 pygame.quit()
