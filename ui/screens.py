@@ -56,8 +56,9 @@ class StartMenuScreen:
       
         self.title_font = pygame.font.SysFont("Arial", 65, bold=True)
         self.button_font = pygame.font.SysFont("Arial", 28, bold=True)
-        self.play_button = pygame.Rect(380, 280, 240, 60)
-        self.settings_button = pygame.Rect(380, 360, 240, 60)  
+        self.play_button_rect = pygame.Rect(380, 280, 240, 60)
+        self.settings_button_rect = pygame.Rect(380, 360, 240, 60)
+        self.exit_button_rect = pygame.Rect(380, 440, 240, 60)
 
     def draw(self, screen):
        
@@ -72,8 +73,9 @@ class StartMenuScreen:
 
         
         mouse_pos = pygame.mouse.get_pos()
-        is_hovered_play = self.play_button.collidepoint(mouse_pos)
-        is_hovered_settings = self.settings_button.collidepoint(mouse_pos)
+        is_hovered_play = self.play_button_rect.collidepoint(mouse_pos)
+        is_hovered_settings = self.settings_button_rect.collidepoint(mouse_pos)
+        is_hovered_exit = self.exit_button_rect.collidepoint(mouse_pos)
         
         bg_color_play = (163, 22, 43) if is_hovered_play else (84, 11, 22)
         border_color_play = (247, 202, 24) if is_hovered_play else (130, 90, 40)
@@ -82,21 +84,33 @@ class StartMenuScreen:
         bg_color_settings = (163, 22, 43) if is_hovered_settings else (84, 11, 22)
         border_color_settings = (247, 202, 24) if is_hovered_settings else (130, 90, 40)
         text_color_settings = (255, 255, 255) if is_hovered_settings else (220, 220, 220)
+
+        bg_color_exit = (163, 22, 43) if is_hovered_exit else (84, 11, 22)
+        border_color_exit = (247, 202, 24) if is_hovered_exit else (130, 90, 40)
+        text_color_exit = (255, 255, 255) if is_hovered_exit else (220, 220, 220)
         
-        pygame.draw.rect(screen, bg_color_play, self.play_button, border_radius=10)
-        pygame.draw.rect(screen, border_color_play, self.play_button, width=2, border_radius=10)
+        pygame.draw.rect(screen, bg_color_play, self.play_button_rect, border_radius=10)
+        pygame.draw.rect(screen, border_color_play, self.play_button_rect, width=2, border_radius=10)
         text_surf_play = self.button_font.render("Iniciar", True, text_color_play)
         screen.blit(text_surf_play, (
-            self.play_button.x + (self.play_button.width - text_surf_play.get_width()) // 2,
-            self.play_button.y + (self.play_button.height - text_surf_play.get_height()) // 2
+            self.play_button_rect.x + (self.play_button_rect.width - text_surf_play.get_width()) // 2,
+            self.play_button_rect.y + (self.play_button_rect.height - text_surf_play.get_height()) // 2
         ))
         
-        pygame.draw.rect(screen, bg_color_settings, self.settings_button, border_radius=10)
-        pygame.draw.rect(screen, border_color_settings, self.settings_button, width=2, border_radius=10)
+        pygame.draw.rect(screen, bg_color_settings, self.settings_button_rect, border_radius=10)
+        pygame.draw.rect(screen, border_color_settings, self.settings_button_rect, width=2, border_radius=10)
         text_surf_settings = self.button_font.render("Configuración", True, text_color_settings)
         screen.blit(text_surf_settings, (
-            self.settings_button.x + (self.settings_button.width - text_surf_settings.get_width()) // 2,
-            self.settings_button.y + (self.settings_button.height - text_surf_settings.get_height()) // 2
+            self.settings_button_rect.x + (self.settings_button_rect.width - text_surf_settings.get_width()) // 2,
+            self.settings_button_rect.y + (self.settings_button_rect.height - text_surf_settings.get_height()) // 2
+        ))
+
+        pygame.draw.rect(screen, bg_color_exit, self.exit_button_rect, border_radius=10)
+        pygame.draw.rect(screen, border_color_exit, self.exit_button_rect, width=2, border_radius=10)
+        text_surf_exit = self.button_font.render("Salir", True, text_color_exit)
+        screen.blit(text_surf_exit, (
+            self.exit_button_rect.x + (self.exit_button_rect.width - text_surf_exit.get_width()) // 2,
+            self.exit_button_rect.y + (self.exit_button_rect.height - text_surf_exit.get_height()) // 2
         ))
 
     def handle_click(self, pos):
