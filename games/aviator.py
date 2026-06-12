@@ -7,6 +7,7 @@ class AviatorGame:
     def __init__(self, font):
         self.font = font
         self.big_font = pygame.font.SysFont("Arial", 80, bold=True)
+        self.bet_amount = 10
         self.reset_game()
 
     def reset_game(self):
@@ -15,7 +16,6 @@ class AviatorGame:
         self.start_time = 0
         self.crash_point = self.generate_crash_point()
         self.status = "WAITING" 
-        self.bet_amount = 10
         self.win_amount = 0
 
     def generate_crash_point(self):

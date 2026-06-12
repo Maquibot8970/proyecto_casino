@@ -8,7 +8,11 @@ game_data = {
         "blackjack": False,
         "poker": False
     },
-    "has_made_first_choice": False  
+    "has_made_first_choice": False,
+    "max_cash": 1000,
+    "music_enabled": True,
+    "sound_enabled": True,
+    "leaderboard": []
 }
 
 game_data = game_data.copy()
@@ -22,7 +26,12 @@ def load():
     global game_data
     if os.path.exists("save_data.json"):
         with open("save_data.json", "r") as f:
-            game_data = json.load(f)
+            loaded_data = json.load(f)
+            # Asegurar compatibilidad con datos antiguos
+            for key, val in game_data.items():
+                if key not in loaded_data:
+                    loaded_data[key] = val
+            game_data = loaded_data
     else:
         game_data = game_data.copy()
         save()
