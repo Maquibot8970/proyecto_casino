@@ -1,4 +1,5 @@
-import pygame 
+import pygame
+from pygame.locals import *
 
 class MenuScreen:
     def __init__(self,font):
@@ -56,7 +57,7 @@ class StartMenuScreen:
         self.title_font = pygame.font.SysFont("Arial", 65, bold=True)
         self.button_font = pygame.font.SysFont("Arial", 28, bold=True)
         self.play_button = pygame.Rect(380, 280, 240, 60)
-        self.settings_button = pygame.Rect(380, 360, 240, 60)  # Ajusta las coordenadas según tus necesidades
+        self.settings_button = pygame.Rect(380, 360, 240, 60)  
 
     def draw(self, screen):
        
@@ -99,10 +100,12 @@ class StartMenuScreen:
         ))
 
     def handle_click(self, pos):
-        if self.play_button.collidepoint(pos):
-            return "START"
-        elif self.settings_button.collidepoint(pos):
+        if self.play_button_rect.collidepoint(pos):
+            return "GAME_MENU"
+        elif self.settings_button_rect.collidepoint(pos):
             return "SETTINGS"
+        elif self.exit_button_rect.collidepoint(pos):
+            return "EXIT"
         return None
 
 class SettingsMenuScreen:
@@ -115,4 +118,59 @@ class SettingsMenuScreen:
         screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 45))
 
     def handle_click(self, pos):
+        return None
+
+class GameMenuScreen:
+    def __init__(self, font):
+        self.font = font
+      
+     
+        self.image_path_aviator = "assets/images/aviator.png"
+        self.image_path_poker = "assets/images/poker.png"
+        self.image_path_blackjack = "assets/images/blackjack.png"
+
+        self.aviator_image = pygame.image.load(self.image_path_aviator)
+        self.poker_image = pygame.image.load(self.image_path_poker)
+        self.blackjack_image = pygame.image.load(self.image_path_blackjack)
+
+
+        self.aviator_image = pygame.transform.scale(self.aviator_image, (100, 100))
+        self.poker_image = pygame.transform.scale(self.poker_image, (100, 100))
+        self.blackjack_image = pygame.transform.scale(self.blackjack_image, (100, 100))
+
+ 
+        self.aviator_button_rect = pygame.Rect(250, 200, 120, 140)
+        self.poker_button_rect = pygame.Rect(600, 200, 120, 140)
+        self.blackjack_button_rect = pygame.Rect(950, 200, 120, 140)
+
+    def draw(self, screen):
+        screen.fill((28, 5, 8))
+        
+   
+        if self.aviator_image:
+            screen.blit(self.aviator_image, self.aviator_button_rect)
+            title_surf = self.font.render("AVIATOR", True, (247, 202, 24))
+            screen.blit(title_surf, (self.aviator_button_rect.centerx - title_surf.get_width() // 2, self.aviator_button_rect.bottom + 10))
+
+        if self.poker_image:
+            screen.blit(self.poker_image, self.poker_button_rect)
+            title_surf = self.font.render("POKER", True, (247, 202, 24))
+            screen.blit(title_surf, (self.poker_button_rect.centerx - title_surf.get_width() // 2, self.poker_button_rect.bottom + 10))
+
+        if self.blackjack_image:
+            screen.blit(self.blackjack_image, self.blackjack_button_rect)
+            title_surf = self.font.render("BLACKJACK", True, (247, 202, 24))
+            screen.blit(title_surf, (self.blackjack_button_rect.centerx - title_surf.get_width() // 2, self.blackjack_button_rect.bottom + 10))
+
+        title_surf = self.font.render("Elije tu juego", True, (247, 202, 24))
+        screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 50))
+
+
+    def handle_click(self, pos):
+        if self.aviator_button_rect.collidepoint(pos):
+            return "AVIATOR"
+        elif self.poker_button_rect.collidepoint(pos):
+            return "POKER"
+        elif self.blackjack_button_rect.collidepoint(pos):
+            return "BLACKJACK"
         return None

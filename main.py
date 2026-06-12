@@ -1,40 +1,41 @@
 import pygame
+from pygame.locals import QUIT, MOUSEBUTTONDOWN
 from data import save_manager
-from ui.screens import MenuScreen, StartMenuScreen
+from ui.screens import *
 from games.aviator import AviatorGame
 
 pygame.init()
 save_manager.load() #cargamos datos
 
-screen = pygame.display.set_mode((1000,800))
-clock = pygame.time.Clock()
-font = pygame.font.SysFont("Arial",30) #fuente y tamaño
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((1024, 768))
+    font = pygame.font.SysFont("Arial",30) #fuente y tamaño
+    start_screen = GameMenuScreen(font)
 
-menu = MenuScreen(font)
-aviator = AviatorGame(font)
-current_state = "START_MENU"
-running = True
-start_menu = StartMenuScreen(font)
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                running = False
+            elif event.type == MOUSEBUTTONDOWN:
+                result = start_screen.handle_click(event.pos)
+                if result == "AVIATOR":
+                   
+                    pass
+                elif result == "POKER":
+               
+                    pass
+                elif result == "BLACKJACK":
+                    
+                    pass
+
+        start_screen.draw(screen)
+        pygame.display.flip()
+
+    pygame.quit()
+    exit()
 
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            click_pos = event.pos
-            result = start_menu.handle_click(click_pos)
-            if result == "START":
-                current_state = "MENU"
-            elif result == "SETTINGS":
-                current_state = "SETTINGS_MENU"
-
-    screen.fill((28, 5, 8))
-
-    if current_state == "START_MENU":
-        start_menu.draw(screen)
-
-    pygame.display.flip()
-    clock.tick(60)  #60 fps
-
-pygame.quit()
+if __name__ == "__main__":
+    main()
