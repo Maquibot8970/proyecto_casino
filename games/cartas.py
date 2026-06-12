@@ -5,13 +5,13 @@ class Carta:
         self.palo = palo
         self.valor = valor 
 
-        # __str__ permite ver el texto en la terminal
-        def __str__(self):
-            return f"{self.valor} de {self.palo}"
+    # __str__ permite ver el texto en la terminal
+    def __str__(self):
+        return f"{self.valor} de {self.palo}"
 
 class Baraja:
     def __init__(self):
-        self.carta = [] # Iniciamos con una cadena vacia para despues guardar los objetos
+        self.cartas = [] # Iniciamos con una cadena vacia para despues guardar los objetos
         self.construir_baraja()
     
     def construir_baraja(self):

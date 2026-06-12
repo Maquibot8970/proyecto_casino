@@ -3,6 +3,7 @@ from pygame.locals import QUIT, MOUSEBUTTONDOWN
 from data import save_manager
 from ui.screens import *
 from games.aviator import AviatorGame
+from games.blackjack import BlackjackGame
 
 pygame.init()
 save_manager.load() #cargamos datos
@@ -16,6 +17,7 @@ def main():
     game_menu = GameMenuScreen(font)
     settings_menu = SettingsMenuScreen(font)
     aviator = AviatorGame(font)
+    blackjack = BlackjackGame(font)
     
     current_state = "START_MENU"
     clock = pygame.time.Clock()
@@ -51,7 +53,7 @@ def main():
                     elif result == "POKER":
                         pass
                     elif result == "BLACKJACK":
-                        pass
+                        current_state = "BLACKJACK"
             
           
             if current_state == "AVIATOR":
@@ -59,11 +61,16 @@ def main():
                 if state_signal == "MENU":
                     current_state = "GAME_MENU"
                     save_manager.save()
-
+            elif current_state == "BLACKJACK":
+                state_signal = blackjack.handle_event(event, save_manager.game_data)
+                if state_signal == "MENU":
+                    current_state = "GAME_MENU"
+                    save_manager.save()
+ 
   
         if current_state == "AVIATOR":
             aviator.update()
-
+ 
        
         if current_state == "START_MENU":
             start_menu.draw(screen)
@@ -73,6 +80,8 @@ def main():
             settings_menu.draw(screen)
         elif current_state == "AVIATOR":
             aviator.draw(screen)
+        elif current_state == "BLACKJACK":
+            blackjack.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)

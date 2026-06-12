@@ -157,7 +157,7 @@ class GameMenuScreen:
     def draw(self, screen, game_data):
         screen.fill((28, 5, 8))
         
-        # Mostrar dinero del jugador
+        
         cash_surf = self.font.render(f"Dinero: ${game_data['cash']}", True, (247, 202, 24))
         screen.blit(cash_surf, (1000 - cash_surf.get_width() - 50, 50))
         

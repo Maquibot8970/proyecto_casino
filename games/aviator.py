@@ -46,13 +46,13 @@ class AviatorGame:
 
        
         info = ""
-        if self.status == "WAITING": info = "Presiona espacio para apostar $10"
-        elif self.status == "FLYING": info = "Presiona enter para COBRAR"
-        elif self.status == "CRASHED": info = "Perdiste espacio para reintentar"
-        elif self.status == "CASHED_OUT": info = f"Ganaste ${self.win_amount}! presiona espacio para otra"
+        if self.status == "WAITING": info = f"Apuesta: ${self.bet_amount} (Arriba/Abajo) | Espacio para apostar"
+        elif self.status == "FLYING": info = f"Presiona enter para COBRAR (${int(self.bet_amount * self.multiplier)})"
+        elif self.status == "CRASHED": info = f"Perdiste. Apuesta: ${self.bet_amount} (Arriba/Abajo) | Espacio para reintentar"
+        elif self.status == "CASHED_OUT": info = f"Ganaste ${self.win_amount}! Apuesta: ${self.bet_amount} (Arriba/Abajo) | Espacio para jugar"
 
         info_text = self.font.render(info, True, (200, 200, 200))
-        screen.blit(info_text, (300, 500))
+        screen.blit(info_text, (250, 500))
         
  
         esc_text = self.font.render("ESC para volver al lobby", True, (100, 100, 100))
@@ -64,15 +64,18 @@ class AviatorGame:
                 self.reset_game()
                 return "MENU"
 
-            
-            if event.key == pygame.K_SPACE and self.status in ["WAITING", "CRASHED", "CASHED_OUT"]:
-                if game_data["cash"] >= self.bet_amount:
-                    game_data["cash"] -= self.bet_amount
-                    self.reset_game()
-                    self.start_time = pygame.time.get_ticks()
-                    self.status = "FLYING"
+            if self.status in ["WAITING", "CRASHED", "CASHED_OUT"]:
+                if event.key == pygame.K_UP:
+                    self.bet_amount = min(game_data["cash"], self.bet_amount + 10)
+                elif event.key == pygame.K_DOWN:
+                    self.bet_amount = max(10, self.bet_amount - 10)
+                elif event.key == pygame.K_SPACE:
+                    if game_data["cash"] >= self.bet_amount:
+                        game_data["cash"] -= self.bet_amount
+                        self.reset_game()
+                        self.start_time = pygame.time.get_ticks()
+                        self.status = "FLYING"
 
-           
             if event.key == pygame.K_RETURN and self.status == "FLYING":
                 self.win_amount = int(self.bet_amount * self.multiplier)
                 game_data["cash"] += self.win_amount
