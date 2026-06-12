@@ -138,7 +138,6 @@ class GameMenuScreen:
     def __init__(self, font):
         self.font = font
       
-     
         self.image_path_aviator = "assets/images/aviator.png"
         self.image_path_poker = "assets/images/poker.png"
         self.image_path_blackjack = "assets/images/blackjack.png"
@@ -147,44 +146,65 @@ class GameMenuScreen:
         self.poker_image = pygame.image.load(self.image_path_poker)
         self.blackjack_image = pygame.image.load(self.image_path_blackjack)
 
-
         self.aviator_image = pygame.transform.scale(self.aviator_image, (100, 100))
         self.poker_image = pygame.transform.scale(self.poker_image, (100, 100))
         self.blackjack_image = pygame.transform.scale(self.blackjack_image, (100, 100))
 
- 
-        self.aviator_button_rect = pygame.Rect(250, 200, 120, 140)
-        self.poker_button_rect = pygame.Rect(600, 200, 120, 140)
-        self.blackjack_button_rect = pygame.Rect(950, 200, 120, 140)
+        self.aviator_button_rect = pygame.Rect(150, 250, 120, 140)
+        self.poker_button_rect = pygame.Rect(440, 250, 120, 140)
+        self.blackjack_button_rect = pygame.Rect(730, 250, 120, 140)
 
-    def draw(self, screen):
+    def draw(self, screen, game_data):
         screen.fill((28, 5, 8))
         
-   
+        # Mostrar dinero del jugador
+        cash_surf = self.font.render(f"Dinero: ${game_data['cash']}", True, (247, 202, 24))
+        screen.blit(cash_surf, (1000 - cash_surf.get_width() - 50, 50))
+        
+        unlocked = game_data["unlocked_games"]
+
         if self.aviator_image:
             screen.blit(self.aviator_image, self.aviator_button_rect)
             title_surf = self.font.render("AVIATOR", True, (247, 202, 24))
             screen.blit(title_surf, (self.aviator_button_rect.centerx - title_surf.get_width() // 2, self.aviator_button_rect.bottom + 10))
+            status_str = "Desbloqueado" if unlocked.get("aviator") else "Bloqueado ($500)"
+            status_color = (0, 255, 0) if unlocked.get("aviator") else (200, 50, 50)
+            status_surf = self.font.render(status_str, True, status_color)
+            screen.blit(status_surf, (self.aviator_button_rect.centerx - status_surf.get_width() // 2, self.aviator_button_rect.bottom + 45))
 
         if self.poker_image:
             screen.blit(self.poker_image, self.poker_button_rect)
             title_surf = self.font.render("POKER", True, (247, 202, 24))
             screen.blit(title_surf, (self.poker_button_rect.centerx - title_surf.get_width() // 2, self.poker_button_rect.bottom + 10))
+            status_str = "Desbloqueado" if unlocked.get("poker") else "Bloqueado ($500)"
+            status_color = (0, 255, 0) if unlocked.get("poker") else (200, 50, 50)
+            status_surf = self.font.render(status_str, True, status_color)
+            screen.blit(status_surf, (self.poker_button_rect.centerx - status_surf.get_width() // 2, self.poker_button_rect.bottom + 45))
 
         if self.blackjack_image:
             screen.blit(self.blackjack_image, self.blackjack_button_rect)
             title_surf = self.font.render("BLACKJACK", True, (247, 202, 24))
             screen.blit(title_surf, (self.blackjack_button_rect.centerx - title_surf.get_width() // 2, self.blackjack_button_rect.bottom + 10))
+            status_str = "Desbloqueado" if unlocked.get("blackjack") else "Bloqueado ($500)"
+            status_color = (0, 255, 0) if unlocked.get("blackjack") else (200, 50, 50)
+            status_surf = self.font.render(status_str, True, status_color)
+            screen.blit(status_surf, (self.blackjack_button_rect.centerx - status_surf.get_width() // 2, self.blackjack_button_rect.bottom + 45))
 
         title_surf = self.font.render("Elije tu juego", True, (247, 202, 24))
         screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 50))
 
-
-    def handle_click(self, pos):
-        if self.aviator_button_rect.collidepoint(pos):
-            return "AVIATOR"
-        elif self.poker_button_rect.collidepoint(pos):
-            return "POKER"
-        elif self.blackjack_button_rect.collidepoint(pos):
-            return "BLACKJACK"
+    def handle_click(self, pos, game_data):
+        unlocked = game_data["unlocked_games"]
+        for game_key, rect, result_key in [
+            ("aviator", self.aviator_button_rect, "AVIATOR"),
+            ("poker", self.poker_button_rect, "POKER"),
+            ("blackjack", self.blackjack_button_rect, "BLACKJACK")
+        ]:
+            if rect.collidepoint(pos):
+                if unlocked.get(game_key, False):
+                    return result_key
+                elif game_data["cash"] >= 500:
+                    game_data["cash"] -= 500
+                    unlocked[game_key] = True
+                    return result_key
         return None

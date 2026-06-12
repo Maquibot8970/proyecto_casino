@@ -45,7 +45,7 @@ def main():
                         save_manager.save()
                         running = False
                 elif current_state == "GAME_MENU":
-                    result = game_menu.handle_click(event.pos)
+                    result = game_menu.handle_click(event.pos, save_manager.game_data)
                     if result == "AVIATOR":
                         current_state = "AVIATOR"
                     elif result == "POKER":
@@ -53,22 +53,22 @@ def main():
                     elif result == "BLACKJACK":
                         pass
             
-            # Si estamos en el juego Aviator, delegamos eventos
+          
             if current_state == "AVIATOR":
                 state_signal = aviator.handle_event(event, save_manager.game_data)
                 if state_signal == "MENU":
                     current_state = "GAME_MENU"
                     save_manager.save()
 
-        # Actualizaciones dinámicas
+  
         if current_state == "AVIATOR":
             aviator.update()
 
-        # Dibujo de la pantalla correspondiente
+       
         if current_state == "START_MENU":
             start_menu.draw(screen)
         elif current_state == "GAME_MENU":
-            game_menu.draw(screen)
+            game_menu.draw(screen, save_manager.game_data)
         elif current_state == "SETTINGS_MENU":
             settings_menu.draw(screen)
         elif current_state == "AVIATOR":
