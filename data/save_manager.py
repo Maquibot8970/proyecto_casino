@@ -27,7 +27,7 @@ def load():
     if os.path.exists("save_data.json"):
         with open("save_data.json", "r") as f:
             loaded_data = json.load(f)
-            # Asegurar compatibilidad con datos antiguos
+       
             for key, val in game_data.items():
                 if key not in loaded_data:
                     loaded_data[key] = val

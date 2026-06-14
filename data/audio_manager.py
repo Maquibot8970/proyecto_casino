@@ -9,7 +9,7 @@ click_sound = None
 def generate_assets():
     os.makedirs("assets/audio", exist_ok=True)
     
-    # Generate click.wav
+    
     click_path = "assets/audio/click.wav"
     if not os.path.exists(click_path):
         sample_rate = 22050
@@ -28,7 +28,7 @@ def generate_assets():
                 data = struct.pack('<h', val)
                 w.writeframesraw(data)
                 
-    # Generate music.mp3 (WAV under the hood, compatible with pygame.mixer.music)
+ 
     music_path = "assets/audio/music.mp3"
     if not os.path.exists(music_path):
         sample_rate = 22050
@@ -40,7 +40,7 @@ def generate_assets():
             w.setsampwidth(2)
             w.setframerate(sample_rate)
             
-            # Repetir la melodía 4 veces para hacer un loop más largo de 16 segundos
+           
             for _ in range(4):
                 for freq in notes:
                     num_samples = int(note_duration * sample_rate)
@@ -53,21 +53,20 @@ def generate_assets():
 def init(game_data):
     global click_sound
     
-    # Generar archivos si no existen
+    
     generate_assets()
     
-    # Inicializar mezclador si no está ya listo
+  
     if not pygame.mixer.get_init():
         pygame.mixer.init()
         
-    # Cargar click sound
+ 
     if os.path.exists("assets/audio/click.wav"):
         click_sound = pygame.mixer.Sound("assets/audio/click.wav")
-        
-    # Cargar y reproducir música
+
     if os.path.exists("assets/audio/music.mp3"):
         pygame.mixer.music.load("assets/audio/music.mp3")
-        pygame.mixer.music.play(-1) # Reproducir en bucle
+        pygame.mixer.music.play(-1) 
         
     update_music_state(game_data)
 

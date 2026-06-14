@@ -141,8 +141,7 @@ class SettingsMenuScreen:
         pygame.draw.line(screen, (163, 22, 43), (0, 120), (1000, 120), 4)
         
         mouse_pos = pygame.mouse.get_pos()
-        
-        # Render each button
+     
         buttons = [
             ("music", self.music_button, "Música: ACTIVADA" if game_data.get("music_enabled", True) else "Música: DESACTIVADA"),
             ("sound", self.sound_button, "Sonido: ACTIVADO" if game_data.get("sound_enabled", True) else "Sonido: DESACTIVADO"),
@@ -360,14 +359,14 @@ class GameOverScreen:
             if event.key == pygame.K_RETURN:
                 if len(self.name.strip()) > 0:
                     player_name = self.name.strip()
-                    # Guardar record
+                
                     leaderboard = game_data.get("leaderboard", [])
                     leaderboard.append({"name": player_name, "score": self.max_cash})
-                    # Ordenar y conservar solo top 10
+                    
                     leaderboard.sort(key=lambda x: x.get("score", 0), reverse=True)
                     game_data["leaderboard"] = leaderboard[:10]
                     
-                    # Reiniciar datos del juego por completo
+               
                     game_data["cash"] = 1000
                     game_data["max_cash"] = 1000
                     game_data["has_made_first_choice"] = False
@@ -378,7 +377,7 @@ class GameOverScreen:
             elif event.key == pygame.K_BACKSPACE:
                 self.name = self.name[:-1]
             else:
-                # Filtrar caracteres permitidos y limitar longitud de nombre
+             
                 if len(self.name) < 15 and (event.unicode.isalnum() or event.unicode in [' ', '_', '-']):
                     self.name += event.unicode
         return None
