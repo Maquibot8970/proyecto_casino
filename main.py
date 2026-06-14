@@ -5,6 +5,7 @@ from data import audio_manager
 from ui.screens import *
 from games.aviator import AviatorGame
 from games.blackjack import BlackjackGame
+from games.poker import PokerGame
 
 pygame.init()
 save_manager.load() #cargamos datos
@@ -24,6 +25,7 @@ def main():
     game_over_screen = GameOverScreen(font)
     aviator = AviatorGame(font)
     blackjack = BlackjackGame(font)
+    poker = PokerGame(font)
     
     current_state = "START_MENU"
     clock = pygame.time.Clock()
@@ -92,7 +94,7 @@ def main():
                         if result == "AVIATOR":
                             current_state = "AVIATOR"
                         elif result == "POKER":
-                            pass
+                            current_state = "POKER"
                         elif result == "BLACKJACK":
                             current_state = "BLACKJACK"
             
@@ -105,6 +107,12 @@ def main():
                     save_manager.save()
             elif current_state == "BLACKJACK":
                 state_signal = blackjack.handle_event(event, save_manager.game_data)
+                if state_signal == "MENU":
+                    audio_manager.play_click(save_manager.game_data)
+                    current_state = "GAME_MENU"
+                    save_manager.save()
+            elif current_state == "POKER":
+                state_signal = poker.handle_event(event, save_manager.game_data)
                 if state_signal == "MENU":
                     audio_manager.play_click(save_manager.game_data)
                     current_state = "GAME_MENU"
@@ -135,6 +143,8 @@ def main():
             aviator.draw(screen)
         elif current_state == "BLACKJACK":
             blackjack.draw(screen)
+        elif current_state == "POKER":
+            poker.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)

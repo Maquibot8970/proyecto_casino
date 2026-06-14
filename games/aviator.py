@@ -2,7 +2,7 @@ import pygame
 import random
 import math
 
-# ─── Paleta del proyecto ─────────────────────────────────────────────────────
+
 BG_COLOR        = (20,  12,  14)
 PANEL_COLOR     = (28,   5,   8)
 DARK_RED        = (84,  11,  22)
@@ -20,7 +20,7 @@ SKY_BOT         = (20,   12,  14)
 
 
 class AviatorGame:
-    # ── Ventana de juego (misma resolución que el resto del proyecto) ──────
+   
     W, H = 1000, 800
 
     def __init__(self, font):
@@ -30,7 +30,7 @@ class AviatorGame:
         self.small_font = pygame.font.SysFont("Arial", 22)
         self.btn_font   = pygame.font.SysFont("Arial", 26, bold=True)
 
-        # ── Botones ────────────────────────────────────────────────────────
+       
         self.start_btn   = pygame.Rect(60,  680, 260, 60)
         self.cashout_btn = pygame.Rect(360, 680, 260, 60)
         self.bet_minus   = pygame.Rect(660, 680,  50, 60)
@@ -39,34 +39,34 @@ class AviatorGame:
         self.bet_amount = 10
         self._reset()
 
-    # ─────────────────────────────────────────────────────────────────────────
+    
     def _reset(self):
         self.multiplier   = 1.00
         self.start_time   = 0
         self.crash_point  = self._gen_crash()
-        self.status       = "WAITING"   # WAITING | FLYING | CRASHED | CASHED_OUT
+        self.status       = "WAITING"   
         self.win_amount   = 0
-        # avión
+        
         self.plane_x      = 80.0
         self.plane_y      = float(self.H - 160)
-        self.trail        = []          # lista de (x, y) del rastro
+        self.trail        = []          
         self._angle       = 0.0
 
     def _gen_crash(self):
         return round(random.uniform(1.01, 10.0) ** random.uniform(1.0, 1.5), 2)
 
-    # ── Helpers para convertir multiplicador a posición del avión ─────────
+   
     def _mult_to_pos(self, mult):
-        """Devuelve (x, y) en la zona de vuelo dado un multiplicador."""
+        
         flight_w = self.W - 120
-        flight_h = self.H - 240     # zona de vuelo vertical
-        t = min((mult - 1.0) / 9.0, 1.0)   # 0..1 normalizado hasta 10x
+        flight_h = self.H - 240    
+        t = min((mult - 1.0) / 9.0, 1.0)   
         x = 80 + flight_w * t
-        # curva: baja suavemente al principio, luego sube fuerte
+        
         y = (self.H - 160) - flight_h * (t ** 0.7)
         return x, y
 
-    # ─────────────────────────────────────────────────────────────────────────
+   
     def update(self):
         if self.status != "FLYING":
             return
@@ -75,13 +75,13 @@ class AviatorGame:
         self.multiplier = round(1.00 * (1.07 ** elapsed), 2)
 
         nx, ny = self._mult_to_pos(self.multiplier)
-        # calcular ángulo de vuelo
+        
         dx = nx - self.plane_x
         dy = ny - self.plane_y
         if dx != 0:
             self._angle = math.degrees(math.atan2(-dy, dx))
 
-        # guardar rastro cada pocos píxeles
+        
         if len(self.trail) == 0 or abs(nx - self.trail[-1][0]) > 4:
             self.trail.append((nx, ny))
             if len(self.trail) > 300:
@@ -93,9 +93,9 @@ class AviatorGame:
             self.multiplier = self.crash_point
             self.status     = "CRASHED"
 
-    # ─────────────────────────────────────────────────────────────────────────
+    
     def draw(self, screen):
-        # ── Fondo degradado (cielo nocturno) ──────────────────────────────
+        
         for row in range(self.H):
             t   = row / self.H
             r   = int(SKY_TOP[0] * (1 - t) + SKY_BOT[0] * t)
@@ -103,7 +103,7 @@ class AviatorGame:
             b   = int(SKY_TOP[2] * (1 - t) + SKY_BOT[2] * t)
             pygame.draw.line(screen, (r, g, b), (0, row), (self.W, row))
 
-        # ── Estrellas decorativas ─────────────────────────────────────────
+   
         rng = random.Random(42)
         for _ in range(60):
             sx = rng.randint(0, self.W)
@@ -111,15 +111,14 @@ class AviatorGame:
             alpha = rng.randint(100, 255)
             pygame.draw.circle(screen, (alpha, alpha, alpha), (sx, sy), 1)
 
-        # ── Panel inferior ────────────────────────────────────────────────
+        
         pygame.draw.rect(screen, PANEL_COLOR, (0, self.H - 200, self.W, 200))
         pygame.draw.line(screen, GOLD_DIM, (0, self.H - 200), (self.W, self.H - 200), 2)
 
-        # ── Línea de tierra ───────────────────────────────────────────────
+        
         pygame.draw.line(screen, GOLD_DIM,
                          (60, self.H - 160), (self.W - 60, self.H - 160), 2)
 
-        # ── Rastro del avión ──────────────────────────────────────────────
         if len(self.trail) > 1:
             for i in range(1, len(self.trail)):
                 alpha = int(255 * (i / len(self.trail)))
@@ -128,12 +127,12 @@ class AviatorGame:
                                  (int(self.trail[i-1][0]), int(self.trail[i-1][1])),
                                  (int(self.trail[i][0]),   int(self.trail[i][1])), 2)
 
-        # ── Avión ─────────────────────────────────────────────────────────
+       
         if self.status != "WAITING":
             self._draw_plane(screen, int(self.plane_x), int(self.plane_y),
                              self._angle if self.status == "FLYING" else 0)
 
-        # ── Multiplicador central ─────────────────────────────────────────
+       
         if self.status == "CRASHED":
             mult_color = CRASHED_RED
             label      = f"{self.multiplier:.2f}x  CRASHED!"
@@ -147,20 +146,20 @@ class AviatorGame:
         mult_surf = self.big_font.render(label, True, mult_color)
         screen.blit(mult_surf, (self.W // 2 - mult_surf.get_width() // 2, 60))
 
-        # ── Info de estado ────────────────────────────────────────────────
+       
         if self.status == "WAITING":
             info = "Ajusta tu apuesta y presiona  INICIO"
         elif self.status == "FLYING":
             info = f"Presiona  COBRAR  para ganar  ${int(self.bet_amount * self.multiplier)}"
         elif self.status == "CRASHED":
             info = f"El avión se estrelló — perdiste  ${self.bet_amount}.  Ajusta y presiona INICIO"
-        else:   # CASHED_OUT
+        else:   
             info = f"¡Ganaste  ${self.win_amount}!  Ajusta y presiona INICIO para otra ronda"
 
         info_surf = self.small_font.render(info, True, GRAY)
         screen.blit(info_surf, (self.W // 2 - info_surf.get_width() // 2, 175))
 
-        # ── Botones ────────────────────────────────────────────────────────
+       
         mouse = pygame.mouse.get_pos()
         self._draw_button(screen, self.start_btn, "INICIO",
                           enabled=self.status != "FLYING",
@@ -172,7 +171,7 @@ class AviatorGame:
                           hovered=self.cashout_btn.collidepoint(mouse) and self.status == "FLYING",
                           color_on=(20, 90, 30), color_hover=(30, 150, 50))
 
-        # ── Control de apuesta ────────────────────────────────────────────
+       
         self._draw_button(screen, self.bet_minus, "−",
                           enabled=self.status != "FLYING",
                           hovered=self.bet_minus.collidepoint(mouse) and self.status != "FLYING",
@@ -182,7 +181,7 @@ class AviatorGame:
                           hovered=self.bet_plus.collidepoint(mouse) and self.status != "FLYING",
                           color_on=DARK_RED, color_hover=RED_HOVER)
 
-        # caja de apuesta
+       
         bet_box = pygame.Rect(715, 680, 60, 60)
         pygame.draw.rect(screen, (10, 10, 10), bet_box, border_radius=8)
         pygame.draw.rect(screen, GOLD_DIM, bet_box, width=2, border_radius=8)
@@ -193,37 +192,37 @@ class AviatorGame:
         label_bet = self.small_font.render("Apuesta", True, GRAY)
         screen.blit(label_bet, (715, 750))
 
-        # ── Crash point (oculto durante el vuelo) ─────────────────────────
+        
         if self.status in ("CRASHED", "CASHED_OUT"):
             cp_surf = self.small_font.render(
                 f"Crash point: {self.crash_point:.2f}x", True, DARK_GRAY)
             screen.blit(cp_surf, (self.W - cp_surf.get_width() - 20, self.H - 190))
 
-        # ── ESC hint ──────────────────────────────────────────────────────
+     
         esc_surf = self.small_font.render("ESC — volver al lobby", True, DARK_GRAY)
         screen.blit(esc_surf, (20, self.H - 185))
 
-    # ─────────────────────────────────────────────────────────────────────────
+   
     def _draw_plane(self, screen, cx, cy, angle=0):
-        """Dibuja un avión estilizado centrado en (cx, cy), rotado 'angle' grados."""
+        
         size = 36
         surf = pygame.Surface((size * 3, size * 2), pygame.SRCALPHA)
-        # cuerpo (elipse)
+        
         pygame.draw.ellipse(surf, (220, 180, 40),
                             (size // 2, size // 2, size * 2, size - 4))
-        # cola
+        
         pygame.draw.polygon(surf, (200, 60, 30), [
             (size // 2, size // 2 + 4),
             (0,         size // 2 - 10),
             (0,         size // 2 + 20),
         ])
-        # ala superior
+        
         pygame.draw.polygon(surf, (180, 140, 20), [
             (size,          size // 2 + 4),
             (size + size//2, 0),
             (size + size,    size // 2 + 4),
         ])
-        # nariz
+      
         pygame.draw.polygon(surf, (240, 200, 60), [
             (size * 2 + size // 2, size // 2 + 4),
             (size * 3,             size // 2 + size // 4),
@@ -234,7 +233,7 @@ class AviatorGame:
         rect    = rotated.get_rect(center=(cx, cy))
         screen.blit(rotated, rect)
 
-    # ─────────────────────────────────────────────────────────────────────────
+    
     def _draw_button(self, screen, rect, text,
                      enabled=True, hovered=False,
                      color_on=(84, 11, 22), color_hover=(163, 22, 43)):
@@ -257,13 +256,13 @@ class AviatorGame:
         screen.blit(t_surf, (rect.x + (rect.width  - t_surf.get_width())  // 2,
                              rect.y + (rect.height - t_surf.get_height()) // 2))
 
-    # ─────────────────────────────────────────────────────────────────────────
+    
     def handle_event(self, event, game_data):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self._reset()
                 return "MENU"
-            # Atajos de teclado opcionales
+           
             if self.status in ("WAITING", "CRASHED", "CASHED_OUT"):
                 if event.key == pygame.K_UP:
                     self.bet_amount = min(game_data["cash"], self.bet_amount + 10)
@@ -287,7 +286,7 @@ class AviatorGame:
 
         return "AVIATOR"
 
-    # ─────────────────────────────────────────────────────────────────────────
+    
     def _try_start(self, game_data):
         if game_data["cash"] < self.bet_amount:
             return
