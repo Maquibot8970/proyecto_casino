@@ -37,7 +37,7 @@ def main():
             save_manager.game_data["max_cash"] = save_manager.game_data["cash"]
             
      
-        if save_manager.game_data["cash"] <= 0 and current_state not in ["GAME_OVER", "START_MENU"]:
+        if save_manager.game_data["cash"] <= 0 and current_state == "GAME_MENU":
             current_state = "GAME_OVER"
             game_over_screen.setup(save_manager.game_data.get("max_cash", 1000))
 
@@ -91,7 +91,10 @@ def main():
                     result = game_menu.handle_click(event.pos, save_manager.game_data)
                     if result:
                         audio_manager.play_click(save_manager.game_data)
-                        if result == "AVIATOR":
+                        if result == "RESTART":
+                            current_state = "GAME_OVER"
+                            game_over_screen.setup(save_manager.game_data.get("max_cash", 1000))
+                        elif result == "AVIATOR":
                             current_state = "AVIATOR"
                         elif result == "POKER":
                             current_state = "POKER"

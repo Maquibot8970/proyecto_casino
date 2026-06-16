@@ -196,6 +196,8 @@ class GameMenuScreen:
         self.aviator_button_rect = pygame.Rect(150, 250, 120, 140)
         self.poker_button_rect = pygame.Rect(440, 250, 120, 140)
         self.blackjack_button_rect = pygame.Rect(730, 250, 120, 140)
+        self.restart_button_rect = pygame.Rect(20, 20, 120, 40)
+        self.button_font = pygame.font.SysFont("Arial", 22, bold=True)
 
     def draw(self, screen, game_data):
         screen.fill((28, 5, 8))
@@ -235,8 +237,19 @@ class GameMenuScreen:
 
         title_surf = self.font.render("Elije tu juego", True, (247, 202, 24))
         screen.blit(title_surf, (1000 // 2 - title_surf.get_width() // 2, 50))
+        
+        mouse_pos = pygame.mouse.get_pos()
+        is_hovered_restart = self.restart_button_rect.collidepoint(mouse_pos)
+        bg_color = (163, 22, 43) if is_hovered_restart else (84, 11, 22)
+        pygame.draw.rect(screen, bg_color, self.restart_button_rect, border_radius=10)
+        pygame.draw.rect(screen, (247, 202, 24), self.restart_button_rect, width=2, border_radius=10)
+        restart_surf = self.button_font.render("Reiniciar", True, (255, 255, 255))
+        screen.blit(restart_surf, (self.restart_button_rect.x + (self.restart_button_rect.width - restart_surf.get_width()) // 2, self.restart_button_rect.y + (self.restart_button_rect.height - restart_surf.get_height()) // 2))
 
     def handle_click(self, pos, game_data):
+        if self.restart_button_rect.collidepoint(pos):
+            return "RESTART"
+            
         unlocked = game_data["unlocked_games"]
         for game_key, rect, result_key in [
             ("aviator", self.aviator_button_rect, "AVIATOR"),

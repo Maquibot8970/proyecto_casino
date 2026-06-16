@@ -29,7 +29,7 @@ def generate_assets():
                 w.writeframesraw(data)
                 
  
-    music_path = "assets/audio/music.mp3"
+    music_path = "assets/audio/music.wav"
     if not os.path.exists(music_path):
         sample_rate = 22050
         notes = [261.63, 329.63, 392.00, 493.88, 523.25, 493.88, 392.00, 329.63]
@@ -64,8 +64,8 @@ def init(game_data):
     if os.path.exists("assets/audio/click.wav"):
         click_sound = pygame.mixer.Sound("assets/audio/click.wav")
 
-    if os.path.exists("assets/audio/music.mp3"):
-        pygame.mixer.music.load("assets/audio/music.mp3")
+    if os.path.exists("assets/audio/music.wav"):
+        pygame.mixer.music.load("assets/audio/music.wav")
         pygame.mixer.music.play(-1) 
         
     update_music_state(game_data)
